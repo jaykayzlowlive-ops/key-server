@@ -1,20 +1,59 @@
 from flask import Flask, request, jsonify
 import requests
 import os
+import random
+import string
 
 app = Flask(__name__)
 
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
-# ตัวอย่างเก็บ key (ไว้เทสก่อน)
+# เก็บ key
 keys = {
     "1234": None,
     "VIP999": None
 }
 
+# =========================
+# 🔐 สร้างคีย์อัตโนมัติ
+# =========================
+
+def generate_key():
+    chars = string.ascii_uppercase + string.digits
+    return "-".join(
+        "".join(random.choice(chars) for _ in range(4))
+        for _ in range(3)
+    )
+
+def create_keys(amount=25):
+    if not WEBHOOK_URL:
+        return
+
+    new_keys = []
+
+    for _ in range(amount):
+        key = generate_key()
+        keys[key] = None
+        new_keys.append(f"{key} :")
+
+    content = "🔐 NEW KEYS\n```\n" + "\n".join(new_keys) + "\n```"
+
+    try:
+        requests.post(WEBHOOK_URL, json={"content": content})
+    except:
+        pass
+
+# =========================
+
 @app.route("/health")
 def health():
     return "OK"
+
+# 🔥 เรียกสร้างคีย์ผ่านเว็บ
+@app.route("/createkeys")
+def create_keys_route():
+    create_keys(25)
+    return "Created 25 Keys"
 
 
 @app.route("/verify", methods=["POST"])
@@ -59,4 +98,3 @@ def send_log(message):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
-

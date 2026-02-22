@@ -1,8 +1,18 @@
 from flask import Flask, request, jsonify
 import requests
 import os
+from flask import Flask, jsonify
 
 app = Flask(__name__)
+
+@app.route("/health")
+def health():
+    return "OK"
+
+@app.route("/verify", methods=["POST"])
+def verify():
+    return jsonify({"status": "working"})
+
 
 # 🔥 ใส่ webhook ผ่าน environment variable
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
@@ -44,4 +54,5 @@ def send_log(message):
 
 
 if __name__ == "__main__":
+
     app.run(host="0.0.0.0", port=8000)

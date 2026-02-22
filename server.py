@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-WEBHOOK_URL = os.getenv("https://discordapp.com/api/webhooks/1475128103884816499/4cqVrvWskDy2L9NWeYNzTahssKotueBCHdg4OFZGfu46E0rb4cz4_pIPdEgjFFQzw1E6")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
 # ตัวอย่างเก็บ key (ไว้เทสก่อน)
 keys = {
@@ -59,3 +59,4 @@ def send_log(message):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
+
